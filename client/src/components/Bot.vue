@@ -15,7 +15,10 @@
             <div v-if="message.isBot" class="chat_avatar">
                <img src="https://res.cloudinary.com/dqvwa7vpe/image/upload/v1496415051/avatar_ma6vug.jpg">
             </div>
-            {{ message.content }}
+            <span v-if="message.isBot">{{ message.content }}</span>
+            <span v-else>
+              <NameBox :questionContent="message.questionContent" v-if="isNameMessage(message)"></NameBox>
+            </span>
           </span>
           <span v-if="!message.isBot" class="status">20m ago</span>
         </span>
@@ -36,20 +39,30 @@
 <script>
 import axios from 'axios';
 
+import NameBox from './users/NameBox.vue';
+
 let STATE_INITIALIZE = 1;
 let STATE_ACTIVATED = 2;
 
+let QUESTION_TYPE_NAME = 1;
+
 export default {
+  components: {
+    NameBox
+  },
   data: function() {
     return {
       currentState: STATE_INITIALIZE,
       iconClass: 'zmdi-comment-outline',
       chatClass: '',
-      messages: []
+      messages: [],
+      botConversations: [],
+      userAnwsers: []
     }
   },
   created: function() {
     this.fetchData();
+    this.initEventListener();
   },
   methods: {
     activateChat: function() {
@@ -61,9 +74,49 @@ export default {
       axios.get('http://127.0.0.1:3000/')
         .then(function(response) {
           if (response.data.length > 0) {
-            self.messages = response.data;
+            self.botConversations = response.data;
+            self.makeMessage();
           }
         })
+    },
+    makeMessage: function() {
+      if (this.botConversations.length > 0){
+        let nextBotConversion = this.botConversations.shift();
+        this.messages.push({
+          isBot: true,
+          isQuestion: nextBotConversion.isQuestion,
+          content: nextBotConversion.content
+        });
+
+        if (nextBotConversion.isQuestion) {
+          // if this is a question, create input for user
+          let newMessage = {
+            isBot: false,
+            type: nextBotConversion.questionType,
+            questionContent: nextBotConversion.content
+          }
+
+          this.messages.push(newMessage);
+        } else {
+          // continue to push new message
+          this.makeMessage();
+        }
+      }
+    },
+    isNameMessage: function(message) {
+      return message.type == QUESTION_TYPE_NAME;
+    },
+    initEventListener: function() {
+      let self = this;
+
+      this.$on('submited', function(data) {
+        self.userAnwsers.push({
+          question: data.question,
+          anwser: `${data.firstName} ${data.lastName}`
+        });
+
+        console.log(self.userAnwsers);
+      })
     }
   },
   computed: {

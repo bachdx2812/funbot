@@ -14,20 +14,13 @@ const server = http.createServer((req, res) => {
 
   let data = [
       {
-        isBot: true,
-        content: 'こんにちは'
+        content: 'Hello, is this me youre looking for.',
+        isQuestion: false
       },
       {
-        isBot: false,
-        content: 'Nothing'
-      },
-      {
-        isBot: true,
-        content: 'what is your name'
-      },
-      {
-        isBot: false,
-        content: 'My name is Bach'
+        content: 'What is your name',
+        isQuestion: true,
+        questionType: 1 // name question
       }
   ]
 
