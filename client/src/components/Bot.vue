@@ -10,20 +10,15 @@
         </div>
       </div>
       <div id="chat_converse" class="chat_conversion chat_converse" style="display: block;">
-        <span class="chat_msg_item chat_msg_item_admin">
-        <div class="chat_avatar">
-           <img src="https://res.cloudinary.com/dqvwa7vpe/image/upload/v1496415051/avatar_ma6vug.jpg">
-        </div>Hey there! Any question?</span>
-        <span class="chat_msg_item chat_msg_item_user">
-        Hello!</span>
-        <span class="status">20m ago</span>
-        <span class="chat_msg_item chat_msg_item_admin">
-        <div class="chat_avatar">
-           <img src="https://res.cloudinary.com/dqvwa7vpe/image/upload/v1496415051/avatar_ma6vug.jpg">
-        </div>Hey! Would you like to talk sales, support, or anyone?</span>
-        <span class="chat_msg_item chat_msg_item_user">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span>
-         <span class="status2">Just now. Not seen yet</span>
+        <span v-for="message in messages" :key="message.content">
+          <span class="chat_msg_item" :class="message.isBot ? 'chat_msg_item_admin' : 'chat_msg_item_user' ">
+            <div v-if="message.isBot" class="chat_avatar">
+               <img src="https://res.cloudinary.com/dqvwa7vpe/image/upload/v1496415051/avatar_ma6vug.jpg">
+            </div>
+            {{ message.content }}
+          </span>
+          <span v-if="!message.isBot" class="status">20m ago</span>
+        </span>
       </div>
       <div class="fab_field">
         <a id="fab_camera" class="fab is-visible"><i class="zmdi zmdi-camera"></i></a>
@@ -39,6 +34,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 let STATE_INITIALIZE = 1;
 let STATE_ACTIVATED = 2;
 
@@ -47,13 +44,27 @@ export default {
     return {
       currentState: STATE_INITIALIZE,
       iconClass: 'zmdi-comment-outline',
-      chatClass: ''
+      chatClass: '',
+      messages: []
     }
+  },
+  created: function() {
+    this.fetchData();
   },
   methods: {
     activateChat: function() {
       this.currentState = this.isInitState ? STATE_ACTIVATED : STATE_INITIALIZE;
     },
+    fetchData: function() {
+      let self = this;
+
+      axios.get('http://127.0.0.1:3000/')
+        .then(function(response) {
+          if (response.data.length > 0) {
+            self.messages = response.data;
+          }
+        })
+    }
   },
   computed: {
     isInitState: function() {
@@ -61,7 +72,7 @@ export default {
     }
   },
   watch: {
-    currentState: function(val) {
+    currentState: function() {
       this.iconClass = this.isInitState ? 'zmdi-comment-outline' : 'zmdi-close is-active is-visible';
       this.chatClass = this.isInitState ? '' : 'is-visible';
     }
