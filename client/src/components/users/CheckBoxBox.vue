@@ -1,8 +1,9 @@
 <template>
   <span>
-    <input type="text" v-model="firstName"> -
-    <input type="text" v-model="lastName">
-    <br>
+    <span v-for="option in options" :key="option">
+      <input v-model="selected" type="checkbox" :value="option">
+      <label> {{ option }} </label>
+    </span>
     <button @click="submit">Submit</button>
   </span>
 </template>
@@ -10,6 +11,10 @@
 <script>
 export default {
   props: {
+    options: {
+      type: Array,
+      required: true
+    },
     questionContent: {
       type: String,
       required: true
@@ -17,15 +22,14 @@ export default {
   },
   data: function() {
     return {
-      firstName: '',
-      lastName: ''
+      selected: []
     }
   },
   methods: {
     submit: function() {
       this.$parent.$emit('submited', {
         question: this.questionContent,
-        anwser: `${this.lastName} ${this.firstName}`
+        anwser: this.selected
       })
     }
   }
@@ -33,5 +37,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

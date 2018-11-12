@@ -18,6 +18,8 @@
             <span v-if="message.isBot">{{ message.content }}</span>
             <span v-else>
               <NameBox :questionContent="message.questionContent" v-if="isNameMessage(message)"></NameBox>
+              <RadioBox :questionContent="message.questionContent" :options="message.options" v-if="isRadioMessage(message)"></RadioBox>
+              <CheckBoxBox :questionContent="message.questionContent" :options="message.options" v-if="isCheckBoxMessage(message)"></CheckBoxBox>
             </span>
           </span>
           <span v-if="!message.isBot" class="status">20m ago</span>
@@ -40,15 +42,21 @@
 import axios from 'axios';
 
 import NameBox from './users/NameBox.vue';
+import RadioBox from './users/RadioBox.vue';
+import CheckBoxBox from './users/CheckBoxBox.vue';
 
 let STATE_INITIALIZE = 1;
 let STATE_ACTIVATED = 2;
 
 let QUESTION_TYPE_NAME = 1;
+let QUESTION_TYPE_RADIO = 2;
+let QUESTION_TYPE_CHECKBOX = 3;
 
 export default {
   components: {
-    NameBox
+    NameBox,
+    RadioBox,
+    CheckBoxBox
   },
   data: function() {
     return {
@@ -96,6 +104,13 @@ export default {
             questionContent: nextBotConversion.content
           }
 
+          switch(newMessage.type) {
+            case QUESTION_TYPE_RADIO:
+            case QUESTION_TYPE_CHECKBOX:
+              newMessage.options = nextBotConversion.options;
+              break;
+          }
+
           this.messages.push(newMessage);
         } else {
           // continue to push new message
@@ -106,16 +121,24 @@ export default {
     isNameMessage: function(message) {
       return message.type == QUESTION_TYPE_NAME;
     },
+    isRadioMessage: function(message) {
+      return message.type == QUESTION_TYPE_RADIO;
+    },
+    isCheckBoxMessage: function(message) {
+      return message.type == QUESTION_TYPE_CHECKBOX;
+    },
     initEventListener: function() {
       let self = this;
 
       this.$on('submited', function(data) {
         self.userAnwsers.push({
           question: data.question,
-          anwser: `${data.firstName} ${data.lastName}`
+          anwser: data.anwser
         });
 
         console.log(self.userAnwsers);
+
+        self.makeMessage();
       })
     }
   },

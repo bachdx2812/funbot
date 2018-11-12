@@ -12,6 +12,11 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET')
   res.setHeader('Access-Control-Allow-Headers', '*')
 
+
+  let QUESTION_TYPE_NAME = 1;
+  let QUESTION_TYPE_RADIO = 2;
+  let QUESTION_TYPE_CHECKBOX = 3;
+
   let data = [
       {
         content: 'Hello, is this me youre looking for.',
@@ -20,7 +25,19 @@ const server = http.createServer((req, res) => {
       {
         content: 'What is your name',
         isQuestion: true,
-        questionType: 1 // name question
+        questionType: QUESTION_TYPE_NAME
+      },
+      {
+        content: 'What is your gender',
+        isQuestion: true,
+        questionType: QUESTION_TYPE_RADIO,
+        options: ['male', 'female', 'other']
+      },
+      {
+        content: 'What do you want',
+        isQuestion: true,
+        questionType: QUESTION_TYPE_CHECKBOX,
+        options: ['books', 'game', 'macbook pro', 'redbull', 'malboro']
       }
   ]
 
@@ -30,4 +47,3 @@ const server = http.createServer((req, res) => {
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
-
