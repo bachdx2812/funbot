@@ -3,7 +3,7 @@
     <input type="text" v-model="firstName"> -
     <input type="text" v-model="lastName">
     <br>
-    <button @click="submit">Submit</button>
+    <button @click="submit" :disabled="done">Submit</button>
   </span>
 </template>
 
@@ -18,15 +18,21 @@ export default {
   data: function() {
     return {
       firstName: '',
-      lastName: ''
+      lastName: '',
+      done: false
     }
   },
   methods: {
     submit: function() {
+      if (this.done) {
+        return false;
+      }
       this.$parent.$emit('submited', {
         question: this.questionContent,
-        anwser: `${this.lastName} ${this.firstName}`
-      })
+        anwser: `${this.lastName} ${this.firstName}`,
+        isName: true
+      });
+      this.done = true;
     }
   }
 }

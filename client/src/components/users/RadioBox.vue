@@ -4,6 +4,7 @@
       <input v-model="selected" type="radio" :value="option">
       <label> {{ option }} </label>
     </span>
+    <button @click="submit" :disabled="done">Submit</button>
   </span>
 </template>
 
@@ -21,15 +22,20 @@ export default {
   },
   data: function() {
     return {
-      selected: null
+      selected: null,
+      done: false
     }
   },
-  watch: {
-    selected: function(val) {
+  methods: {
+    submit: function() {
+      if (this.done) {
+        return false;
+      }
       this.$parent.$emit('submited', {
         question: this.questionContent,
         anwser: this.selected
-      })
+      });
+      this.done = true;
     }
   }
 }

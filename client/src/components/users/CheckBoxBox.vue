@@ -4,7 +4,7 @@
       <input v-model="selected" type="checkbox" :value="option">
       <label> {{ option }} </label>
     </span>
-    <button @click="submit">Submit</button>
+    <button @click="submit" :disabled="done">Submit</button>
   </span>
 </template>
 
@@ -22,15 +22,22 @@ export default {
   },
   data: function() {
     return {
-      selected: []
+      selected: [],
+      done: false
     }
   },
   methods: {
     submit: function() {
+      if (this.done) {
+        return false;
+      }
+
       this.$parent.$emit('submited', {
         question: this.questionContent,
         anwser: this.selected
-      })
+      });
+
+      this.done = true;
     }
   }
 }

@@ -116,6 +116,12 @@ export default {
           // continue to push new message
           this.makeMessage();
         }
+      } else {
+        this.messages.push({
+          isBot: true,
+          content: 'thank you very much'
+        })
+
       }
     },
     isNameMessage: function(message) {
@@ -128,17 +134,22 @@ export default {
       return message.type == QUESTION_TYPE_CHECKBOX;
     },
     initEventListener: function() {
-      let self = this;
-
       this.$on('submited', function(data) {
-        self.userAnwsers.push({
+        if(data.isName) {
+          this.messages.push({
+            isBot: true,
+            content: `Hello Mr/Mrs ${data.anwser}`
+          });
+        }
+
+        this.userAnwsers.push({
           question: data.question,
           anwser: data.anwser
         });
 
-        console.log(self.userAnwsers);
+        console.log(this.userAnwsers);
 
-        self.makeMessage();
+        this.makeMessage();
       })
     }
   },
