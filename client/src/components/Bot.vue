@@ -20,6 +20,8 @@
               <NameBox :questionContent="message.questionContent" v-if="isNameMessage(message)"></NameBox>
               <RadioBox :questionContent="message.questionContent" :options="message.options" v-if="isRadioMessage(message)"></RadioBox>
               <CheckBoxBox :questionContent="message.questionContent" :options="message.options" v-if="isCheckBoxMessage(message)"></CheckBoxBox>
+
+              <JpAddressBox :questionContent="message.questionContent" :options="message.options" v-if="isJpAddressMessage(message)"></JpAddressBox>
             </span>
           </span>
           <span v-if="!message.isBot" class="status">20m ago</span>
@@ -44,6 +46,7 @@ import axios from 'axios';
 import NameBox from './users/NameBox.vue';
 import RadioBox from './users/RadioBox.vue';
 import CheckBoxBox from './users/CheckBoxBox.vue';
+import JpAddressBox from './users/JpAddressBox.vue';
 
 let STATE_INITIALIZE = 1;
 let STATE_ACTIVATED = 2;
@@ -51,12 +54,14 @@ let STATE_ACTIVATED = 2;
 let QUESTION_TYPE_NAME = 1;
 let QUESTION_TYPE_RADIO = 2;
 let QUESTION_TYPE_CHECKBOX = 3;
+let QUESTION_TYPE_ADDRESS = 4;
 
 export default {
   components: {
     NameBox,
     RadioBox,
-    CheckBoxBox
+    CheckBoxBox,
+    JpAddressBox
   },
   data: function() {
     return {
@@ -109,6 +114,9 @@ export default {
             case QUESTION_TYPE_CHECKBOX:
               newMessage.options = nextBotConversion.options;
               break;
+            case QUESTION_TYPE_ADDRESS:
+              newMessage.location = nextBotConversion.location;
+              break;
           }
 
           this.messages.push(newMessage);
@@ -121,7 +129,6 @@ export default {
           isBot: true,
           content: 'thank you very much'
         })
-
       }
     },
     isNameMessage: function(message) {
@@ -132,6 +139,9 @@ export default {
     },
     isCheckBoxMessage: function(message) {
       return message.type == QUESTION_TYPE_CHECKBOX;
+    },
+    isJpAddressMessage: function(message) {
+      return message.type == QUESTION_TYPE_ADDRESS && message.location == 'jp';
     },
     initEventListener: function() {
       this.$on('submited', function(data) {

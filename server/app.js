@@ -16,6 +16,7 @@ const server = http.createServer((req, res) => {
   let QUESTION_TYPE_NAME = 1;
   let QUESTION_TYPE_RADIO = 2;
   let QUESTION_TYPE_CHECKBOX = 3;
+  let QUESTION_TYPE_ADDRESS = 4;
 
   let data = [
       {
@@ -38,6 +39,12 @@ const server = http.createServer((req, res) => {
         isQuestion: true,
         questionType: QUESTION_TYPE_CHECKBOX,
         options: ['books', 'game', 'macbook pro', 'redbull', 'malboro']
+      },
+      {
+        content: 'Can you tell me your address',
+        isQuestion: true,
+        questionType: QUESTION_TYPE_ADDRESS,
+        location: 'jp'
       }
   ]
 
