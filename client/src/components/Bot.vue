@@ -205,6 +205,11 @@ export default {
           anwser: data.anwser
         });
       });
+    },
+    scrollToBottom: function() {
+      const chatBox = document.getElementById('chat_converse');
+
+      chatBox.scrollBy(0, 330);
     }
   },
   computed: {
@@ -216,6 +221,11 @@ export default {
     currentState: function() {
       this.iconClass = this.isInitState ? 'zmdi-comment-outline' : 'zmdi-close is-active is-visible';
       this.chatClass = this.isInitState ? '' : 'is-visible';
+    },
+    messages: function() {
+      this.$nextTick(function() {
+        this.scrollToBottom();
+      })
     }
   }
 }
