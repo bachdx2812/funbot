@@ -12,43 +12,58 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET')
   res.setHeader('Access-Control-Allow-Headers', '*')
 
+  if (req.method === 'GET') {
 
-  let QUESTION_TYPE_NAME = 1;
-  let QUESTION_TYPE_RADIO = 2;
-  let QUESTION_TYPE_CHECKBOX = 3;
-  let QUESTION_TYPE_ADDRESS = 4;
+    let QUESTION_TYPE_NAME = 1;
+    let QUESTION_TYPE_RADIO = 2;
+    let QUESTION_TYPE_CHECKBOX = 3;
+    let QUESTION_TYPE_ADDRESS = 4;
 
-  let data = [
-      {
-        content: 'Hello! Welcome to my dummy chatbot',
-        isQuestion: false
-      },
-      {
-        content: 'What is your name?',
-        isQuestion: true,
-        questionType: QUESTION_TYPE_NAME
-      },
-      {
-        content: 'Can you tell me your gender',
-        isQuestion: true,
-        questionType: QUESTION_TYPE_RADIO,
-        options: ['male', 'female', 'other']
-      },
-      {
-        content: 'Can you tell me about your hobbies',
-        isQuestion: true,
-        questionType: QUESTION_TYPE_CHECKBOX,
-        options: ['books', 'game', 'macbook pro', 'redbull', 'malboro']
-      },
-      {
-        content: 'Where do you live?',
-        isQuestion: true,
-        questionType: QUESTION_TYPE_ADDRESS,
-        location: 'jp'
-      }
-  ]
+    let data = [
+        {
+          content: 'Hello! Welcome to my dummy chatbot',
+          isQuestion: false
+        },
+        {
+          content: 'What is your name?',
+          isQuestion: true,
+          questionType: QUESTION_TYPE_NAME
+        },
+        {
+          content: 'Can you tell me your gender',
+          isQuestion: true,
+          questionType: QUESTION_TYPE_RADIO,
+          options: ['male', 'female', 'other']
+        },
+        {
+          content: 'Can you tell me about your hobbies',
+          isQuestion: true,
+          questionType: QUESTION_TYPE_CHECKBOX,
+          options: ['books', 'game', 'macbook pro', 'redbull', 'malboro']
+        },
+        {
+          content: 'Where do you live?',
+          isQuestion: true,
+          questionType: QUESTION_TYPE_ADDRESS,
+          location: 'jp'
+        }
+    ]
 
-  res.end(JSON.stringify(data));
+    res.end(JSON.stringify(data));
+  } else {
+    let body = '';
+
+    req.on('data', function(chunk) {
+      console.log(chunk.toString());
+      body += chunk.toString();
+    });
+
+    req.on('end', function() {
+      console.log(body);
+      res.end('ok');
+    })
+  }
+
 });
 
 server.listen(port, hostname, () => {

@@ -87,6 +87,7 @@ export default {
           if (this.finished) {
             this.messages = [];
             this.fetchData();
+            this.finished = false;
           }
         } else {
           this.fetchData();
@@ -147,8 +148,17 @@ export default {
             content: FINISH_MESSAGE
           });
           self.finished = true;
+
+          self.submitAnswersToServer();
         }, 1500);
       }
+    },
+    submitAnswersToServer: function() {
+      axios.post(API_ENDPOINT, {
+        data: this.userAnwsers
+      }).then(function(response) {
+        console.log(response);
+      })
     },
     handleUserMessage: function(nextBotConversion) {
       // if this is a question, create input for user
