@@ -48,13 +48,17 @@ import RadioBox from './users/RadioBox.vue';
 import CheckBoxBox from './users/CheckBoxBox.vue';
 import JpAddressBox from './users/JpAddressBox.vue';
 
-let STATE_INITIALIZE = 1;
-let STATE_ACTIVATED = 2;
+const STATE_INITIALIZE = 1;
+const STATE_ACTIVATED = 2;
+const QUESTION_TYPE_NAME = 1;
+const QUESTION_TYPE_RADIO = 2;
+const QUESTION_TYPE_CHECKBOX = 3;
+const QUESTION_TYPE_ADDRESS = 4;
 
-let QUESTION_TYPE_NAME = 1;
-let QUESTION_TYPE_RADIO = 2;
-let QUESTION_TYPE_CHECKBOX = 3;
-let QUESTION_TYPE_ADDRESS = 4;
+const HELLO_MESSAGE = 'Welcome Mr/Mrs';
+const FINISH_MESSAGE = 'Thank you very much!';
+
+const API_ENDPOINT = 'http://127.0.0.1:3000/';
 
 export default {
   components: {
@@ -84,7 +88,7 @@ export default {
     fetchData: function() {
       let self = this;
 
-      axios.get('http://127.0.0.1:3000/')
+      axios.get(API_ENDPOINT)
         .then(function(response) {
           if (response.data.length > 0) {
             self.botConversations = response.data;
@@ -102,24 +106,7 @@ export default {
         });
 
         if (nextBotConversion.isQuestion) {
-          // if this is a question, create input for user
-          let newMessage = {
-            isBot: false,
-            type: nextBotConversion.questionType,
-            questionContent: nextBotConversion.content
-          }
-
-          switch(newMessage.type) {
-            case QUESTION_TYPE_RADIO:
-            case QUESTION_TYPE_CHECKBOX:
-              newMessage.options = nextBotConversion.options;
-              break;
-            case QUESTION_TYPE_ADDRESS:
-              newMessage.location = nextBotConversion.location;
-              break;
-          }
-
-          this.messages.push(newMessage);
+          this.handleUserMessage(nextBotConversion);
         } else {
           // continue to push new message
           this.makeMessage();
@@ -127,9 +114,29 @@ export default {
       } else {
         this.messages.push({
           isBot: true,
-          content: 'thank you very much'
+          content: FINISH_MESSAGE
         })
       }
+    },
+    handleUserMessage: function(nextBotConversion) {
+      // if this is a question, create input for user
+      let newMessage = {
+        isBot: false,
+        type: nextBotConversion.questionType,
+        questionContent: nextBotConversion.content
+      }
+
+      switch(newMessage.type) {
+        case QUESTION_TYPE_RADIO:
+        case QUESTION_TYPE_CHECKBOX:
+          newMessage.options = nextBotConversion.options;
+          break;
+        case QUESTION_TYPE_ADDRESS:
+          newMessage.location = nextBotConversion.location;
+          break;
+      }
+
+      this.messages.push(newMessage);
     },
     isNameMessage: function(message) {
       return message.type == QUESTION_TYPE_NAME;
@@ -148,7 +155,7 @@ export default {
         if(data.isName) {
           this.messages.push({
             isBot: true,
-            content: `Hello Mr/Mrs ${data.anwser}`
+            content: `${HELLO_MESSAGE} ${data.anwser}`
           });
         }
 
@@ -156,8 +163,6 @@ export default {
           question: data.question,
           anwser: data.anwser
         });
-
-        console.log(this.userAnwsers);
 
         this.makeMessage();
       })

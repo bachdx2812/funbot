@@ -20,28 +20,28 @@ const server = http.createServer((req, res) => {
 
   let data = [
       {
-        content: 'Hello, is this me youre looking for.',
+        content: 'Hello! Welcome to my dummy chatbot',
         isQuestion: false
       },
       {
-        content: 'What is your name',
+        content: 'What is your name?',
         isQuestion: true,
         questionType: QUESTION_TYPE_NAME
       },
       {
-        content: 'What is your gender',
+        content: 'Can you tell me your gender',
         isQuestion: true,
         questionType: QUESTION_TYPE_RADIO,
         options: ['male', 'female', 'other']
       },
       {
-        content: 'What do you want',
+        content: 'Can you tell me about your hobbies',
         isQuestion: true,
         questionType: QUESTION_TYPE_CHECKBOX,
         options: ['books', 'game', 'macbook pro', 'redbull', 'malboro']
       },
       {
-        content: 'Can you tell me your address',
+        content: 'Where do you live?',
         isQuestion: true,
         questionType: QUESTION_TYPE_ADDRESS,
         location: 'jp'
