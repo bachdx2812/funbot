@@ -71,7 +71,8 @@ export default {
       chatClass: '',
       messages: [],
       botConversations: [],
-      userAnwsers: []
+      userAnwsers: [],
+      finished: false
     }
   },
   created: function() {
@@ -82,7 +83,14 @@ export default {
       this.currentState = this.isInitState ? STATE_ACTIVATED : STATE_INITIALIZE;
 
       if (this.currentState == STATE_ACTIVATED) {
-        this.fetchData();
+        if (this.messages.length > 0) {
+          if (this.finished) {
+            this.messages = [];
+            this.fetchData();
+          }
+        } else {
+          this.fetchData();
+        }
       }
     },
     fetchData: function() {
@@ -137,7 +145,8 @@ export default {
           self.messages.push({
             isBot: true,
             content: FINISH_MESSAGE
-          })
+          });
+          self.finished = true;
         }, 1500);
       }
     },
