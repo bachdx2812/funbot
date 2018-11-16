@@ -1,10 +1,9 @@
 <template>
-  <span>
-    <input type="text" v-model="firstName"> -
-    <input type="text" v-model="lastName">
-    <br>
+  <div class="message_form">
+    <input type="text" v-model="firstName" placeholder="First Name">
+    <input type="text" v-model="lastName" placeholder="Last Name">
     <button @click="submit" :disabled="done">Submit</button>
-  </span>
+  </div>
 </template>
 
 <script>
@@ -39,5 +38,8 @@ export default {
 </script>
 
 <style scoped>
-
+.message_form {
+  display: flex;
+  flex-direction: column;
+}
 </style>

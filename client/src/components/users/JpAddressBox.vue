@@ -1,26 +1,22 @@
 <template>
-  <span>
+  <div class="message_form">
     <label>郵便番号</label>
-    <br>
-    <input type="text" v-model="beginPostalCode" maxlength="3"/> -
-    <input type="text" v-model="endPostalCode" maxlength="4"/>
+    <div class="postal-code">
+      <input type="text" class="begin" v-model="beginPostalCode" maxlength="3"/>
+      <input type="text" class="end" v-model="endPostalCode" maxlength="4"/>
+    </div>
 
-    <br>
     <label>都道府県名</label>
     <input type="text" v-model="prefecture"/>
-
-    <br>
 
     <label>市区町村名</label>
     <input type="text" v-model="area"/>
 
-    <br>
     <label>番地・マンション名</label>
     <input type="text" v-model="detailAddress"/>
 
-    <br>
     <button @click="submit" :disabled="done">Submit</button>
-  </span>
+  </div>
 </template>
 
 <script>
@@ -86,4 +82,26 @@ export default {
 </script>
 
 <style scoped>
+.message_form {
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+}
+
+.postal-code {
+  display: flex;
+  flex-direction: row;
+  width: 97%;
+}
+
+.postal-code .begin {
+  flex: 1;
+  margin-right: 5px;
+  width: 100% !important;
+}
+
+.postal-code .end {
+  flex: 2;
+  width: 100% !important;
+}
 </style>

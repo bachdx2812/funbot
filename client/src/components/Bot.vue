@@ -16,7 +16,7 @@
                <img src="https://res.cloudinary.com/dqvwa7vpe/image/upload/v1496415051/avatar_ma6vug.jpg">
             </div>
             <span v-if="message.isBot">{{ message.content }}</span>
-            <span v-else>
+            <span class="chat_form" v-else>
               <NameBox :questionContent="message.questionContent" v-if="isNameMessage(message)"></NameBox>
               <RadioBox :questionContent="message.questionContent" :options="message.options" v-if="isRadioMessage(message)"></RadioBox>
               <CheckBoxBox :questionContent="message.questionContent" :options="message.options" v-if="isCheckBoxMessage(message)"></CheckBoxBox>
