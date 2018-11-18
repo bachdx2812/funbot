@@ -1,71 +1,61 @@
-const http = require('http');
+const express = require('express')
+const app = express()
+const port = 3000
+var cors = require('cors')
+const bodyParser = require('body-parser');
 
-const hostname = '127.0.0.1';
-const port = 3000;
+// urlencodedとjsonは別々に初期化する
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json());
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
+app.use(cors())
 
-  res.setHeader('Content-Type', 'application/json');
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Request-Method', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET')
-  res.setHeader('Access-Control-Allow-Headers', '*')
+const QUESTION_TYPE_NAME = 1;
+const QUESTION_TYPE_RADIO = 2;
+const QUESTION_TYPE_CHECKBOX = 3;
+const QUESTION_TYPE_ADDRESS = 4;
 
-  if (req.method === 'GET') {
+app.get('/', (req, res) => {
+  let data = [
+    {
+      content: 'Hello! Welcome to my dummy chatbot',
+      isQuestion: false
+    },
+    {
+      content: 'What is your name?',
+      isQuestion: true,
+      questionType: QUESTION_TYPE_NAME
+    },
+    {
+      content: 'Can you tell me your gender',
+      isQuestion: true,
+      questionType: QUESTION_TYPE_RADIO,
+      options: ['male', 'female', 'other']
+    },
+    {
+      content: 'Can you tell me about your hobbies',
+      isQuestion: true,
+      questionType: QUESTION_TYPE_CHECKBOX,
+      options: ['books', 'game', 'macbook pro', 'redbull', 'malboro']
+    },
+    {
+      content: 'Where do you live?',
+      isQuestion: true,
+      questionType: QUESTION_TYPE_ADDRESS,
+      location: 'jp'
+    }
+  ]
 
-    let QUESTION_TYPE_NAME = 1;
-    let QUESTION_TYPE_RADIO = 2;
-    let QUESTION_TYPE_CHECKBOX = 3;
-    let QUESTION_TYPE_ADDRESS = 4;
+  res.send(JSON.stringify(data));
 
-    let data = [
-        {
-          content: 'Hello! Welcome to my dummy chatbot',
-          isQuestion: false
-        },
-        {
-          content: 'What is your name?',
-          isQuestion: true,
-          questionType: QUESTION_TYPE_NAME
-        },
-        {
-          content: 'Can you tell me your gender',
-          isQuestion: true,
-          questionType: QUESTION_TYPE_RADIO,
-          options: ['male', 'female', 'other']
-        },
-        {
-          content: 'Can you tell me about your hobbies',
-          isQuestion: true,
-          questionType: QUESTION_TYPE_CHECKBOX,
-          options: ['books', 'game', 'macbook pro', 'redbull', 'malboro']
-        },
-        {
-          content: 'Where do you live?',
-          isQuestion: true,
-          questionType: QUESTION_TYPE_ADDRESS,
-          location: 'jp'
-        }
-    ]
+})
 
-    res.end(JSON.stringify(data));
-  } else {
-    let body = '';
-
-    req.on('data', function(chunk) {
-      console.log(chunk.toString());
-      body += chunk.toString();
-    });
-
-    req.on('end', function() {
-      console.log(body);
-      res.end('ok');
-    })
-  }
-
+app.post('/', (req, res) => {
+  console.log(req.body);
+  console.log("abc")
+  res.send('OK');
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))

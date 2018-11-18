@@ -53,7 +53,7 @@ const QUESTION_TYPE_ADDRESS = 4;
 const HELLO_MESSAGE = 'Welcome Mr/Mrs';
 const FINISH_MESSAGE = 'Thank you very much!';
 
-const API_ENDPOINT = 'http://127.0.0.1:3000/';
+const API_ENDPOINT = process.env.NODE_ENV == 'production' ? 'https://server-dfyumbvrra.now.sh/' : 'http://127.0.0.1:3000/';
 
 export default {
   components: {
@@ -154,10 +154,10 @@ export default {
       }
     },
     submitAnswersToServer: function() {
+      console.log("aaba")
       axios.post(API_ENDPOINT, {
         data: this.userAnwsers
       }).then(function(response) {
-        console.log(response);
       })
     },
     handleUserMessage: function(nextBotConversion) {
