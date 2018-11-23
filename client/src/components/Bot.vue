@@ -35,6 +35,9 @@
 <script>
 import axios from 'axios';
 
+import { mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
+
 import ChatIndicator from './animations/ChatIndicator';
 
 import NameBox from './users/NameBox.vue';
@@ -76,9 +79,14 @@ export default {
     }
   },
   created: function() {
+
+    this.fetchQuestions();
     this.initEventListener();
   },
   methods: {
+    ...mapActions('question', {
+      fetchQuestions: 'fetchQuestions'
+    }),
     activateChat: function() {
       this.currentState = this.isInitState ? STATE_ACTIVATED : STATE_INITIALIZE;
 
@@ -223,6 +231,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('question', {
+      questionsList: 'questionsList'
+    }),
     isInitState: function() {
       return (this.currentState == STATE_INITIALIZE);
     }
