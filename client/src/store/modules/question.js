@@ -20,7 +20,6 @@ const mutations = {
 
 const actions = {
   async fetchQuestions({ commit }) {
-    console.log("aaa");
     await axios.get('http://localhost:3000').then((response) => {
       commit(FETCH_QUESTIONS, { data: response.data });
     });
