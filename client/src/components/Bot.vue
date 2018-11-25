@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <a id="prime" class="fab is-float is-visible" @click="activateChat">
+    <a id="prime" class="fab is-float is-visible" @click="toggleChat">
       <i class="prime zmdi" :class="iconClass"></i>
     </a>
   </div>
@@ -34,6 +34,8 @@
 
 <script>
 import axios from 'axios';
+
+import { mapGetters, mapActions, mapState } from 'vuex';
 
 import ChatIndicator from './animations/ChatIndicator';
 
@@ -76,9 +78,17 @@ export default {
     }
   },
   created: function() {
+
+    this.fetchQuestions();
     this.initEventListener();
   },
   methods: {
+    ...mapActions('question', {
+      fetchQuestions: 'fetchQuestions'
+    }),
+    ...mapActions('bot', {
+      toggleChat: 'toggleChat'
+    }),
     activateChat: function() {
       this.currentState = this.isInitState ? STATE_ACTIVATED : STATE_INITIALIZE;
 
@@ -223,14 +233,20 @@ export default {
     }
   },
   computed: {
-    isInitState: function() {
-      return (this.currentState == STATE_INITIALIZE);
-    }
+    ...mapGetters('question', {
+      questionsList: 'questionsList'
+    }),
+    ...mapGetters('bot', {
+      isInitScreen: 'isInitScreen'
+    }),
+    ...mapState('bot', {
+      screen: 'screen'
+    })
   },
   watch: {
-    currentState: function() {
-      this.iconClass = this.isInitState ? 'zmdi-comment-outline' : 'zmdi-close is-active is-visible';
-      this.chatClass = this.isInitState ? '' : 'is-visible';
+    screen: function() {
+      this.iconClass = this.isInitScreen ? 'zmdi-comment-outline' : 'zmdi-close is-active is-visible';
+      this.chatClass = this.isInitScreen ? '' : 'is-visible';
     },
     messages: function() {
       this.$nextTick(function() {
